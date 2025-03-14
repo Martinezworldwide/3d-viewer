@@ -32,9 +32,12 @@ const file = urlParams.get("file");
 
 if (file) {
     const loader = new STLLoader();
+    
+    // Use CORS proxy to bypass GitHub's restrictions
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
     const modelURL = `https://raw.githubusercontent.com/Martinezworldwide/3d-viewer/main/models/${file}`;
 
-    loader.load(modelURL, function (geometry) {
+    loader.load(proxyUrl + modelURL, function (geometry) {
         const material = new THREE.MeshNormalMaterial();
         const mesh = new THREE.Mesh(geometry, material);
         mesh.scale.set(0.1, 0.1, 0.1);
@@ -47,6 +50,7 @@ if (file) {
 } else {
     console.error("No file parameter in URL.");
 }
+
 
 
         // Add OrbitControls
