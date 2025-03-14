@@ -3,51 +3,57 @@
 <head>
     <title>3D Model Viewer</title>
     <script type="module">
-        import * as THREE from './js/three.module.min.js';
-        import { STLLoader } from './js/STLLoader.js';
-        import { OrbitControls } from './js/OrbitControls.js';
+    import * as THREE from './js/three.module.min.js';
+    import { STLLoader } from './js/STLLoader.js';
+    import { OrbitControls } from './js/OrbitControls.js';
 
-        // Scene setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-        // Add lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 5, 5);
-        scene.add(directionalLight);
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
 
-        // Load STL model from InfinityFree
-        const urlParams = new URLSearchParams(window.location.search);
-        const file = urlParams.get("file");
-        if (file) {
-            const loader = new STLLoader();
-            loader.load(file, function (geometry) {
-                const material = new THREE.MeshNormalMaterial();
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.scale.set(0.1, 0.1, 0.1);
-                mesh.position.set(0, -0.5, 0);
-                scene.add(mesh);
-                camera.position.set(0, 2, 5);
-            });
-        }
+    // Get model file from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const file = urlParams.get("file");
 
-        // Add controls
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
+    if (file) {
+        const loader = new STLLoader();
+        loader.load(file, function (geometry) {
+            const material = new THREE.MeshNormalMaterial();
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.scale.set(0.1, 0.1, 0.1);
+            mesh.position.set(0, -0.5, 0);
+            scene.add(mesh);
+            camera.position.set(0, 2, 5);
+        }, undefined, function (error) {
+            console.error("Error loading model:", error);
+        });
+    } else {
+        console.error("No file parameter in URL.");
+    }
 
-        // Render loop
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-    </script>
+    // Add OrbitControls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    // Render loop
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    animate();
+</script>
+
 </head>
 <body></body>
 </html>
