@@ -21,7 +21,7 @@
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    // Get model file from URL parameter
+    // Load STL model from URL parameter
     const urlParams = new URLSearchParams(window.location.search);
     const file = urlParams.get("file");
 
@@ -53,6 +53,7 @@
     }
     animate();
 </script>
+
 
 </head>
 <body></body>
