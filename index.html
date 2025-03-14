@@ -27,24 +27,27 @@
         scene.add(directionalLight);
 
         // Load STL model from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const file = urlParams.get("file");
+const urlParams = new URLSearchParams(window.location.search);
+const file = urlParams.get("file");
 
-        if (file) {
-            const loader = new STLLoader();
-            loader.load(file, function (geometry) {
-                const material = new THREE.MeshNormalMaterial();
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.scale.set(0.1, 0.1, 0.1);
-                mesh.position.set(0, -0.5, 0);
-                scene.add(mesh);
-                camera.position.set(0, 2, 5);
-            }, undefined, function (error) {
-                console.error("Error loading model:", error);
-            });
-        } else {
-            console.error("No file parameter in URL.");
-        }
+if (file) {
+    const loader = new STLLoader();
+    const modelURL = `https://raw.githubusercontent.com/Martinezworldwide/3d-viewer/main/models/${file}`;
+
+    loader.load(modelURL, function (geometry) {
+        const material = new THREE.MeshNormalMaterial();
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.scale.set(0.1, 0.1, 0.1);
+        mesh.position.set(0, -0.5, 0);
+        scene.add(mesh);
+        camera.position.set(0, 2, 5);
+    }, undefined, function (error) {
+        console.error("Error loading model:", error);
+    });
+} else {
+    console.error("No file parameter in URL.");
+}
+
 
         // Add OrbitControls
         const controls = new OrbitControls(camera, renderer.domElement);
